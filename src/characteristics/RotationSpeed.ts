@@ -37,7 +37,9 @@ const characteristic: {
       lastSpeed = 0;
     }
 
-    if (realValue.eq(lastSpeed + 1)) {
+    // Only skip when the device is already at this speed in manual/sleep mode,
+    // otherwise moving the slider while in auto mode would be ignored
+    if (this.device.mode !== Mode.Auto && realValue.eq(lastSpeed + 1)) {
       return;
     }
 

@@ -73,8 +73,8 @@ const deviceTypes: DeviceType[] = [
       input.includes(DeviceName.Vital200S),
     hasAirQuality: true,
     hasAutoMode: true,
-    speedMinStep: 25,
-    speedLevels: 4,
+    speedMinStep: 20,
+    speedLevels: 5,
     hasPM25: true
   },
 ];

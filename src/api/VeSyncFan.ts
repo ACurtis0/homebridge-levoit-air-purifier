@@ -150,8 +150,8 @@ export default class VeSyncFan implements VeSyncGeneric {
 
     const data = this.deviceCategory === 'Vital' ? {
       manualSpeedLevel: speed,
-      switchIdx: 0,
-      type: 'wind'
+      levelIdx: 0,
+      levelType: 'wind'
     } : {
       level: speed,
       type: 'wind',
@@ -162,6 +162,10 @@ export default class VeSyncFan implements VeSyncGeneric {
 
     if (success) {
       this._speed = speed;
+      // Vital devices switch to manual mode when a speed level is set
+      if (this.deviceCategory === 'Vital') {
+        this._mode = Mode.Manual;
+      }
     }
 
     return success;
@@ -209,6 +213,10 @@ export default class VeSyncFan implements VeSyncGeneric {
         this._childLock = result.child_lock || result.childLockSwitch;
         this._isOn = result.enabled || result.powerSwitch;
         this._speed = result.level || result.fanSpeedLevel;
+        // Vital devices report fanSpeedLevel 255 when the fan is not running
+        if (this._speed > this.deviceType.speedLevels - 1 && result.manualSpeedLevel) {
+          this._speed = result.manualSpeedLevel;
+        }
         this._mode = result.mode || result.workMode;
       } catch (err: any) {
         this.client.log.error(err?.message);
